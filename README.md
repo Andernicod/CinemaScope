@@ -15,7 +15,7 @@ Este é um projeto de site de pesquisa de filmes e séries, feito com HTML, CSS,
 - UI
 - UX
 
-# 🌐 APIs Used/APIs Usadas
+# 🌐 APIs used/APIs usadas
 
 - OMDb API
 
@@ -37,7 +37,7 @@ Digite o filme ou série para a qual deseja pesquisar.
 Pressione o botão de pesquisa.
 As informações do título serão exibidas.
 
-## 🔍 how works?/Como funciona
+# 🔍 How works?/Como funciona
 
 When you enter a movie name and click "Search", the site makes a request to the OMDb API for information about the movie. If the request is successful, the movie's information is displayed on the screen, including the title, year of release, rating, synopsis, cast, and IMDb, Rotten Tomatoes, and Metacritic ratings, if available.
 
@@ -63,7 +63,7 @@ Quando você insere o nome de um filme e clica em "Search", o site faz uma solic
 
 - Anderson Nicodemo
 
-## 📝 Licence/Licença
+# 📝 Licence/Licença
 
 This project is licensed under the MIT License. See the LICENSE.md file for more information.
 Este projeto está licenciado sob a Licença MIT. Consulte o arquivo LICENSE.md para obter mais informações.
