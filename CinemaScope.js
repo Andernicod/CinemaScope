@@ -13,50 +13,59 @@ let getMovie = () => {
         fetch(url)
             .then((resp) => resp.json())
             .then((data) => {
-                if (data.Response == "True") {
-                    let imdbRating = data.imdbRating;
-                    let rtValue = data.Ratings.find((rating) => rating.Source === "Rotten Tomatoes")?.Value;
-                    let mcValue = data.Ratings.find((rating) => rating.Source === "Metacritic")?.Value;
-                    result.innerHTML = `
-                    <div class="info">
-                        <img src="${data.Poster}" class="poster">
-                        <div>
-                            <h2>${data.Title}</h2>
-                            <span class="MorS ${data.Type}">
-                                ${data.Type}
-                                ${data.Type === "series" ? ` - ${data.totalSeasons} Seasons` : ""}
-                            </span>
-                            <div class="rating">
-                                <img src="star-icon.svg">
-                                <h4>${imdbRating}</h4>
-                            </div>
-                            <div class="ratings">
-                                <div><img class="IMDb" src="images/IMDb.svg">IMDb: ${imdbRating}</div>
-                                ${rtValue ? `<div><img class="Tomatoes" src="images/Rotten_Tomatoes.svg">Rotten Tomatoes: ${rtValue}</div>` : ""}
-                                ${mcValue ? `<div><img class="Metacritic" src="images/Metacritic.svg">Metacritic: ${mcValue}</div>` : ""}
-                            </div>
-                            <div class="details">
-                                <span>${data.Rated}</span>
-                                <span>${data.Year}</span>
-                                <span>${data.Runtime}</span>
-                            </div>
-                            <div class="origin">
-                                <div>Language: <span>${data.Language}</span></div>
-                                <div>Country: <span>${data.Country}</span></div>
-                            </div>
-                            <div class="genre">
-                                <div>${data.Genre.split(",").join("</div><div>")}</div>
-                            </div>
+            if (data.Response === "True") {
+                const imdbRating = data.Ratings.find(
+                  (rating) => rating.Source === "Internet Movie Database"
+                ).Value;
+                const rtRating = data.Ratings.find(
+                  (rating) => rating.Source === "Rotten Tomatoes"
+                );
+                const rtValue = rtRating ? rtRating.Value : "N/A";
+                
+                const mcRating = data.Ratings.find(
+                  (rating) => rating.Source === "Metacritic"
+                );
+                const mcValue = mcRating ? mcRating.Value : "N/A";
+                result.innerHTML = `
+                <div class="info">
+                    <img src="${data.Poster}" class="poster">
+                    <div>
+                        <h2>${data.Title}</h2>
+                        <span class="MorS ${data.Type}">
+                        ${data.Type} 
+                        ${data.Type === "series" ? ` - ${data.totalSeasons} Seasons` : ""}
+                        </span>
+                        <div class="rating">
+                            <img src="star-icon.svg">
+                            <h4>${imdbRating}</h4>
+                        </div>
+                        <div class="ratings">
+                            <div><img class="IMDb" src="images/IMDb.svg">IMDb: ${imdbRating}</div>
+                            <div><img class="Tomatoes" src="images/Rotten_Tomatoes.svg">Rotten Tomatoes: ${rtValue}</div>
+                            <div><img class="Metacritic" src="images/Metacritic.svg">Metacritic: ${mcValue}</div>
+                        </div>
+                        <div class="details">
+                            <span>${data.Rated}</span>
+                            <span>${data.Year}</span>
+                            <span>${data.Runtime}</span>
+                        </div>
+                        <div class="origin">
+                            <div>Language: <span>${data.Language}</span></div>
+                            <div>Country: <span>${data.Country}</span></div>
+                        </div>
+                        <div class="genre">
+                            <div>${data.Genre.split(",").join("</div><div>")}</div>
                         </div>
                     </div>
+                </div>
                     <h3>Plot:</h3>
                     <p>${data.Plot}</p>
                     <h3>Cast:</h3>
                     <p>${data.Actors}</p>
                     `;
                 } else {
-                    result.innerHTML = `<h3 class="msg">${data.Error}</h3>`;
-                }
+                  result.innerHTML = `<h3 class="msg">${data.Error}</h3>`;
+              }
             })
             .catch(() => {
                 result.innerHTML = `<h3 class="msg">Error Occured</h3>`;
