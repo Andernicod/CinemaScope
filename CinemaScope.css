@@ -6,6 +6,7 @@
     padding: 0;
     box-sizing: border-box;
     font-family: 'Poppins', sans-serif;
+    font-weight: bold;
 }
 
 body{
@@ -16,6 +17,7 @@ body{
     background-size: 100%;
     image-rendering: -webkit-optimize-contrast;
     image-rendering: optimizeContrast;
+    font-weight: bold;
 }
 
 @keyframes fadeIn{
@@ -239,6 +241,7 @@ h2{
 h3{
     font-weight: 500;
     margin-top: 1.2em;
+    font-weight: bold;
 }
 
 p{
@@ -247,6 +250,7 @@ p{
     line-height: 1.8em;
     text-align: justify;
     color: #a0a0a0;
+    font-weight: bold;
 }
 
 .msg{
@@ -266,5 +270,4 @@ p{
     .info{
         grid-template-columns: 1fr;
     }
-
 }
