@@ -78,57 +78,48 @@ searchBtn.addEventListener("click", getMovie);
 const setBackgroundImage = async () => {
   const contentName = movieNameRef.value;
   let imageUrl;
-  const movieUrl = `https://api.themoviedb.org/3/search/movie?api_key=${apiMDT}&query=${contentName}`;
+  const url = `https://www.omdbapi.com/?t=${contentName}&apikey=${apiKey}`;
   try {
-    const response = await fetch(movieUrl);
+    const response = await fetch(url);
     const data = await response.json();
-    if (data.results && data.results.length > 0) {
-      const contentId = data.results[0].id;
-      const imagesUrl = `https://api.themoviedb.org/3/movie/${contentId}/images?api_key=${apiMDT}`;
-      const imagesResponse = await fetch(imagesUrl);
-      const imagesData = await imagesResponse.json();
-      if (imagesData.backdrops && imagesData.backdrops.length > 0) {
-        imageUrl = `https://image.tmdb.org/t/p/original${imagesData.backdrops[0].file_path}`;
-        console.log(`Background image set for movie:`, imageUrl);
-      } else {
-        console.warn(`No image found for movie:`, contentName);
+    if (data.Response === "True") {
+      if (data.Type === "movie") {
+        const movieUrl = `https://api.themoviedb.org/3/search/movie?api_key=${apiMDT}&query=${contentName}`;
+        const movieResponse = await fetch(movieUrl);
+        const movieData = await movieResponse.json();
+        if (movieData.results.length > 0) {
+          const movieId = movieData.results[0].id;
+          const backdropPath = movieData.results[0].backdrop_path;
+          imageUrl = `https://image.tmdb.org/t/p/original/${backdropPath}`;
+        }
+      } else if (data.Type === "series") {
+        const seriesUrl = `https://api.themoviedb.org/3/search/tv?api_key=${apiMDT}&query=${contentName}`;
+        const seriesResponse = await fetch(seriesUrl);
+        const seriesData = await seriesResponse.json();
+        if (seriesData.results.length > 0) {
+          const seriesId = seriesData.results[0].id;
+          const backdropPath = seriesData.results[0].backdrop_path;
+          imageUrl = `https://image.tmdb.org/t/p/original/${backdropPath}`;
+        }
       }
     } else {
-      console.warn(`No movie found:`, contentName);
+      console.warn(`No movie/series found:`, contentName);
     }
   } catch (error) {
-    console.error("Error fetching movie background image:", error);
+    console.error("Error fetching movie/series background image:", error);
   }
-  if (!imageUrl) {
-    const tvUrl = `https://api.themoviedb.org/3/search/tv?api_key=${apiMDT}&query=${contentName}`;
-    try {
-      const response = await fetch(tvUrl);
-      const data = await response.json();
-      if (data.results && data.results.length > 0) {
-        const contentId = data.results[0].id;
-        const imagesUrl = `https://api.themoviedb.org/3/tv/${contentId}/images?api_key=${apiMDT}`;
-        const imagesResponse = await fetch(imagesUrl);
-        const imagesData = await imagesResponse.json();
-        if (imagesData.backdrops && imagesData.backdrops.length > 0) {
-          imageUrl = `https://image.tmdb.org/t/p/original${imagesData.backdrops[0].file_path}`;
-          console.log(`Background image set for TV show:`, imageUrl);
-        } else {
-          console.warn(`No image found for TV show:`, contentName);
-        }
-      } else {
-        console.warn(`No TV show found:`, contentName);
-      }
-    } catch (error) {
-      console.error("Error fetching TV show background image:", error);
-    }
+  if (imageUrl) {
+    document.body.style.backgroundImage = `url(${imageUrl})`;
+    document.body.style.backgroundSize = 'cover';
+    document.body.style.backgroundRepeat = 'no-repeat';
   }
-  if (!imageUrl) {
-    console.warn('No movie or TV show found:', contentName);
-    return;
-  }
-  document.body.style.backgroundImage = `url('${imageUrl}')`;
 };
+
 searchBtn.addEventListener("click", async () => {
   await getMovie();
   await setBackgroundImage();
 });
+
+if (/Mobi|Android/i.test(navigator.userAgent)) {
+  searchBtn.style.fontSize = '16px';
+}
