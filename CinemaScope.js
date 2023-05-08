@@ -2,6 +2,7 @@ let movieNameRef = document.getElementById("movie-name");
 let searchBtn = document.getElementById("search-btn");
 let result = document.getElementById("result");
 const apiKey = "1e444574";
+const apiMDT = "66d8c0055f0a6242054781bc886c7236";
 
 let getMovie = () => {
     let movieName = movieNameRef.value;
@@ -73,3 +74,61 @@ let getMovie = () => {
     }
 };
 searchBtn.addEventListener("click", getMovie);
+
+const setBackgroundImage = async () => {
+  const contentName = movieNameRef.value;
+  let imageUrl;
+  const movieUrl = `https://api.themoviedb.org/3/search/movie?api_key=${apiMDT}&query=${contentName}`;
+  try {
+    const response = await fetch(movieUrl);
+    const data = await response.json();
+    if (data.results && data.results.length > 0) {
+      const contentId = data.results[0].id;
+      const imagesUrl = `https://api.themoviedb.org/3/movie/${contentId}/images?api_key=${apiMDT}`;
+      const imagesResponse = await fetch(imagesUrl);
+      const imagesData = await imagesResponse.json();
+      if (imagesData.backdrops && imagesData.backdrops.length > 0) {
+        imageUrl = `https://image.tmdb.org/t/p/original${imagesData.backdrops[0].file_path}`;
+        console.log(`Background image set for movie:`, imageUrl);
+      } else {
+        console.warn(`No image found for movie:`, contentName);
+      }
+    } else {
+      console.warn(`No movie found:`, contentName);
+    }
+  } catch (error) {
+    console.error("Error fetching movie background image:", error);
+  }
+  if (!imageUrl) {
+    const tvUrl = `https://api.themoviedb.org/3/search/tv?api_key=${apiMDT}&query=${contentName}`;
+    try {
+      const response = await fetch(tvUrl);
+      const data = await response.json();
+      if (data.results && data.results.length > 0) {
+        const contentId = data.results[0].id;
+        const imagesUrl = `https://api.themoviedb.org/3/tv/${contentId}/images?api_key=${apiMDT}`;
+        const imagesResponse = await fetch(imagesUrl);
+        const imagesData = await imagesResponse.json();
+        if (imagesData.backdrops && imagesData.backdrops.length > 0) {
+          imageUrl = `https://image.tmdb.org/t/p/original${imagesData.backdrops[0].file_path}`;
+          console.log(`Background image set for TV show:`, imageUrl);
+        } else {
+          console.warn(`No image found for TV show:`, contentName);
+        }
+      } else {
+        console.warn(`No TV show found:`, contentName);
+      }
+    } catch (error) {
+      console.error("Error fetching TV show background image:", error);
+    }
+  }
+  if (!imageUrl) {
+    console.warn('No movie or TV show found:', contentName);
+    return;
+  }
+  document.body.style.backgroundImage = `url('${imageUrl}')`;
+};
+searchBtn.addEventListener("click", async () => {
+  await getMovie();
+  await setBackgroundImage();
+});
